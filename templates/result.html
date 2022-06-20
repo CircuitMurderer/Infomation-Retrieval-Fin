@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>検索結果</title>
+    <link rel="stylesheet" type="text/css" href="/static/assets/style/result.css">
+</head>
+
+<body>
+<script type="text/javascript">
+    const retBack = () => {
+        window.location.href = '/'
+    }
+</script>
+<h1 style="text-align: center">検索結果/Search Results</h1>
+<h3 style="text-align: center">TF - IDFと転置インデックスに基づいて</h3>
+<table class="rwd-table" style="margin: auto; width: 400px">
+{% if data.success %}
+    <tr>
+        <th>
+            Top {{ data.top_n }} documents for "{{ data.query }}":
+        </th>
+    </tr>
+    {% for item in data.result %}
+        <tr>
+            <td data-th="Result {{ loop.index }}">
+                {{ item }}
+            </td>
+        </tr>
+    {% endfor %}
+{% else %}
+    <tr>
+        <th>マッチしません。/No matches.</th>
+    </tr>
+{% endif %}
+</table>
+<p style="text-align: center; cursor: pointer" onclick="retBack()">
+    &larr; 検索を続行/Continue Searching
+</p>
+</body>
+</html>

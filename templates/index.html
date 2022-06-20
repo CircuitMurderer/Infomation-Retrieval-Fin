@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>簡易検索エンジン</title>
+    <link rel="stylesheet" type="text/css" href="/static/assets/style/index.css">
+</head>
+<body>
+<script type="text/javascript">
+    document.onkeydown = ev => {
+        if (ev.key === 'Enter') {
+            const query = document.getElementById('query').value
+            window.location.href = '/search/' + query
+        }
+    }
+</script>
+<div class="container">
+    <input id="query" type="text" placeholder="検索/Search...">
+    <div class="search"></div>
+</div>
+</body>
+</html>
