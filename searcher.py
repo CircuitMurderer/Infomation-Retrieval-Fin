@@ -14,19 +14,20 @@ from nltk import RegexpTokenizer
 
 
 class JpnSearchEngine:
-    def __init__(self, file_path, length=2400, allow_single_char=False, length_norm=False):
+    def __init__(self, file_path, length=3600, allow_single_char=False, length_norm=False):
+        self.docs = []
+        self.load_data(file_path, length)
+        
+        self.tagger = Tagger()
         self.rules = [
             r'[a-zA-Z0-9¥"¥.¥,¥@]+',
             r'[!"“#$%&()\*\+\-\.,\/:;<=>?@\[\\\]^_`{|}~]',
             r'[\n|\r|\t|年|月|日]'
         ]
+
         self.re_rule = u'([ぁ-んー]+|[ァ-ンー]+|[\u4e00-\u9FFF]+|[ぁ-んァ-ンー\u4e00-\u9FFF]+)'
         self.re_tokenizer = RegexpTokenizer(self.re_rule)
         self.ignored = ['非自立', '接尾', '数']
-
-        self.tagger = Tagger()
-        self.file_path = file_path
-        self.docs = self.load_data(length)
 
         self.length_norm = length_norm
         self.allow_single_char = allow_single_char
@@ -40,21 +41,23 @@ class JpnSearchEngine:
         self.idf = self.__cal_idf()
         self.tf_idf = self.tf * self.idf
 
-    def load_data(self, length):
+    def load_data(self, file_path, length):
         lines = []
-        with open(self.file_path, 'r', encoding='utf-8') as f:
+
+        with open(file_path, 'r', encoding='utf-8') as f:
             if length == 0:
                 lines = f.readlines()
                 lines = [''.join([lines[i], lines[i + 1], lines[i + 2]])
                          for i in range(0, len(lines) // 3 * 3, 3)]
             else:
-                sen = ''
+                sentence = ''
                 for i in range(length // 3 * 3):
-                    sen += f.readline()
+                    sentence += f.readline()
                     if (i + 1) % 3 == 0:
-                        lines.append(sen)
-                        sen = ''
-        return lines
+                        lines.append(sentence)
+                        sentence = ''
+
+        self.docs = lines
 
     def filter(self, text):
         txt = text
